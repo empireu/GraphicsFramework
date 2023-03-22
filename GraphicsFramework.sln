@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework", "GameFramew
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.Utilities", "GameFramework.Utilities\GameFramework.Utilities.csproj", "{E1F3B3E1-191B-418A-9B2A-45D769EDD978}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.Layers", "GameFramework.Layers\GameFramework.Layers.csproj", "{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.ImGui", "GameFramework.ImGui\GameFramework.ImGui.csproj", "{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}"
 EndProject
 Global
@@ -35,14 +33,6 @@ Global
 		{E1F3B3E1-191B-418A-9B2A-45D769EDD978}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1F3B3E1-191B-418A-9B2A-45D769EDD978}.Release|x64.ActiveCfg = Release|x64
 		{E1F3B3E1-191B-418A-9B2A-45D769EDD978}.Release|x64.Build.0 = Release|x64
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Debug|x64.Build.0 = Debug|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Release|x64.ActiveCfg = Release|Any CPU
-		{3D87BA08-1DCC-4AE9-BC80-2721CF344A8A}.Release|x64.Build.0 = Release|Any CPU
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Debug|x64.ActiveCfg = Debug|x64

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Numerics;
 using Veldrid;
 
 namespace GameFramework.Renderer.Batch;
 
+/// <summary>
+///     Versatile rendering batch with support for colored, textured and SDF text quads.
+/// </summary>
 public sealed unsafe class QuadBatch
 {
     private static readonly uint[] Indices =
@@ -105,6 +107,12 @@ public sealed unsafe class QuadBatch
 
     public int QuadsPerBatch { get; }
 
+    /// <summary>
+    ///     Creates a static index buffer for quads.
+    /// </summary>
+    /// <param name="device">The graphics device that owns the buffer.</param>
+    /// <param name="indicesPerBatch">The number of indices per batch. Ideally, it should be a multiple of 6, since one quad uses 6 indices.</param>
+    /// <returns></returns>
     public static DeviceBuffer CreateIndexBuffer(GraphicsDevice device, uint indicesPerBatch)
     {
         var result = device.ResourceFactory.CreateBuffer(
@@ -146,16 +154,16 @@ public sealed unsafe class QuadBatch
     {
         _coloredQuadPipeline?.Dispose();
 
-        var description = new GraphicsPipelineDescription();
-
-        description.BlendState = blendStateDescription;
-        description.DepthStencilState = depthStencilStateDescription;
-
-        description.RasterizerState = RasterizerStateDescription.Default;
-        description.PrimitiveTopology = PrimitiveTopology.TriangleList;
-        description.ResourceLayouts = new[]
+        var description = new GraphicsPipelineDescription
         {
-            _commonResourceLayout
+            BlendState = blendStateDescription,
+            DepthStencilState = depthStencilStateDescription,
+            RasterizerState = RasterizerStateDescription.Default,
+            PrimitiveTopology = PrimitiveTopology.TriangleList,
+            ResourceLayouts = new[]
+            {
+                _commonResourceLayout
+            }
         };
 
         var vertexLayout = new VertexLayoutDescription(
@@ -175,17 +183,17 @@ public sealed unsafe class QuadBatch
     {
         _texturedQuadPipeline?.Dispose();
 
-        var description = new GraphicsPipelineDescription();
-
-        description.BlendState = blendStateDescription;
-        description.DepthStencilState = depthStencilStateDescription;
-
-        description.RasterizerState = RasterizerStateDescription.CullNone;
-        description.PrimitiveTopology = PrimitiveTopology.TriangleList;
-        description.ResourceLayouts = new[]
+        var description = new GraphicsPipelineDescription
         {
-            _texturedQuadLayout,
-            _commonResourceLayout
+            BlendState = blendStateDescription,
+            DepthStencilState = depthStencilStateDescription,
+            RasterizerState = RasterizerStateDescription.CullNone,
+            PrimitiveTopology = PrimitiveTopology.TriangleList,
+            ResourceLayouts = new[]
+            {
+                _texturedQuadLayout,
+                _commonResourceLayout
+            }
         };
 
         var vertexLayout = new VertexLayoutDescription(
@@ -204,21 +212,20 @@ public sealed unsafe class QuadBatch
     {
         _sdfQuadPipeline?.Dispose();
 
-        var description = new GraphicsPipelineDescription();
-
-        description.BlendState = blendStateDescription;
-        description.DepthStencilState = depthStencilStateDescription;
-
-        description.RasterizerState = RasterizerStateDescription.Default;
-        description.PrimitiveTopology = PrimitiveTopology.TriangleList;
-        description.ResourceLayouts = new[]
+        var description = new GraphicsPipelineDescription
         {
-            _sdfQuadLayout,
-            _commonResourceLayout
+            BlendState = blendStateDescription,
+            DepthStencilState = depthStencilStateDescription,
+            RasterizerState = RasterizerStateDescription.Default,
+            PrimitiveTopology = PrimitiveTopology.TriangleList,
+            ResourceLayouts = new[]
+            {
+                _sdfQuadLayout,
+                _commonResourceLayout
+            }
         };
 
         var vertexLayout = new VertexLayoutDescription(
-            
             new VertexElementDescription("Position", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
             new VertexElementDescription("TextureCoordinate", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2),
             new VertexElementDescription("Weight", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float1),
@@ -288,6 +295,16 @@ public sealed unsafe class QuadBatch
         _sdfQuadBuffer.Submit(_list);
     }
 
+    /// <summary>
+    ///     Renders the buffered quads. The buffers are not cleared here. If clearing is desired, use <see cref="Clear"/>!
+    /// </summary>
+    /// <param name="wait">
+    ///     If true, the thread will wait for the submitted graphics commands to finish. Only effectual when <code>flush</code> is set to true!
+    ///     Otherwise, the function will return right after the graphics commands have been submitted.</param>
+    /// <param name="flush">
+    ///     If true, the graphics command will be submitted instantly.
+    /// </param>
+    /// <param name="framebuffer">If null, the swapchain framebuffer is used. Otherwise, the <code>framebuffer</code> will be used for rendering.</param>
     public void Submit(bool wait = true, bool flush = true, Framebuffer? framebuffer = null)
     {
         framebuffer ??= Device.SwapchainFramebuffer;
@@ -308,6 +325,10 @@ public sealed unsafe class QuadBatch
         }
     }
 
+    /// <summary>
+    ///     Submits the graphics commands to the GraphicsDevice.
+    /// </summary>
+    /// <param name="wait">If true, the thread will wait for the commands to complete. Otherwise, the caller will return as soon as submission is completed.</param>
     public void Flush(bool wait)
     {
         Device.SubmitCommands(_list);
@@ -333,6 +354,9 @@ public sealed unsafe class QuadBatch
         _sdfQuadBuffer.Clear();
     }
 
+    /// <summary>
+    ///     Clears all quad buffers.
+    /// </summary>
     public void Clear()
     {
         ClearColoredQuads();

@@ -3,8 +3,9 @@ using Veldrid;
 
 namespace GameFramework;
 
-// This is a cache for resources that share the same description
-// Will give the same object for subsequent calls
+/// <summary>
+///     This is a cache for resources that share the same description. It will give the same object for subsequent calls.
+/// </summary>
 public sealed class GraphicsResourceCache
 {
     private readonly ResourceFactory _factory;
@@ -22,5 +23,4 @@ public sealed class GraphicsResourceCache
     }
 
     public int CachedResourceLayouts => _resourceLayouts.Count;
-
 }

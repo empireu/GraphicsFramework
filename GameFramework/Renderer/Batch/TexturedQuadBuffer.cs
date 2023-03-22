@@ -3,6 +3,10 @@ using Veldrid;
 
 namespace GameFramework.Renderer.Batch;
 
+/// <summary>
+///     Buffer for Textured Quads with texture sorting. Internally, a <see cref="DeviceBufferList{TData}"/> is used to hold the vertex data.
+/// </summary>
+/// <typeparam name="TQuad"></typeparam>
 internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
 {
     public const int Indices = 6;
@@ -24,6 +28,9 @@ internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
         _quadsPerBatch = quadsPerBatch;
     }
 
+    /// <summary>
+    ///     Clears all buffered quads.
+    /// </summary>
     public void Clear()
     {
         DestroyCachedReferences();
@@ -36,12 +43,20 @@ internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
         _texturesVertices.Clear();
     }
 
+    /// <summary>
+    ///     Destroys the cached references to the device objects to prevent them from lingering around (not being GC collectable)
+    /// </summary>
     private void DestroyCachedReferences()
     {
         _lastSet = null;
         _lastBuffer = null;
     }
 
+    /// <summary>
+    ///     Adds a textured quad that uses the specified texture.
+    /// </summary>
+    /// <param name="instance">The quad instance to add.</param>
+    /// <param name="ts">The texture used by the quad.</param>
     public void AddTexturedQuad(ref TQuad instance, TextureSampler ts)
     {
         ResourceSet resourceSet;
@@ -80,6 +95,10 @@ internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
         buffer.Add(ref instance);
     }
 
+    /// <summary>
+    ///     Renders the buffered quads. This results in one draw call per texture used, excluding large geometry batches splitting into multiple draw calls.
+    /// </summary>
+    /// <param name="list">The command list to submit to. It is assumed that framebuffers and such were set up before calling this method.</param>
     public void Submit(CommandList list)
     {
         DestroyCachedReferences();
@@ -104,5 +123,8 @@ internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
         }
     }
 
+    /// <summary>
+    ///     True, if no quads are buffered. Otherwise, false.
+    /// </summary>
     public bool IsEmpty => _texturesVertices.Count == 0;
 }

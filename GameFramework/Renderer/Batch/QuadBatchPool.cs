@@ -4,6 +4,9 @@ using Microsoft.Extensions.ObjectPool;
 
 namespace GameFramework.Renderer.Batch;
 
+/// <summary>
+///     The quad batches are expensive to construct. The <see cref="QuadBatchPool"/> pools batches that are reused to reduce resource consumption.
+/// </summary>
 public sealed class QuadBatchPool
 {
     private class Policy : IPooledObjectPolicy<QuadBatch>
@@ -35,6 +38,9 @@ public sealed class QuadBatchPool
 
     private readonly ConcurrentDictionary<QuadBatch, int> _rented = new();
 
+    /// <summary>
+    ///     Gets the number of batches in use.
+    /// </summary>
     public int InUse => _rented.Count;
 
     public QuadBatchPool(GameApplication application, Action<QuadBatch>? setup = null)
@@ -44,6 +50,10 @@ public sealed class QuadBatchPool
 
     private readonly ObjectPool<QuadBatch> _pool;
 
+    /// <summary>
+    ///     Gets a batch from this pool. If none are available, a new instance is created.
+    /// </summary>
+    /// <returns>A quad batch that will be returned at a later point.</returns>
     public QuadBatch Get()
     {
         var batch = _pool.Get();
@@ -53,15 +63,22 @@ public sealed class QuadBatchPool
         return batch;
     }
 
+    /// <returns>A <see cref="RentedItem{T}"/> provider around <see cref="Get"/></returns>
     public RentedItem<QuadBatch> GetProvider()
     {
         var batch = Get();
+
         return new RentedItem<QuadBatch>(batch, Return);
     }
 
+    /// <summary>
+    ///     Returns a batch to this pool. It must be a batch that was obtained as a result of calling <see cref="Get"/> or <see cref="GetProvider"/>.
+    /// </summary>
+    /// <param name="batch">The batch to return, obtained from this pool.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the returned batch did not originate from this pool.</exception>
     public void Return(QuadBatch batch)
     {
-        if (!_rented.TryRemove(batch, out var id))
+        if (!_rented.TryRemove(batch, out _))
         {
             throw new InvalidOperationException("Cannot return batch that was not rented from this pool!");
         }

@@ -1,5 +1,8 @@
 ﻿namespace GameFramework.Renderer.Batch;
 
+/// <summary>
+///     Used by the quad batches to cache the index buffer in the <see cref="StaticDeviceBufferCache"/>
+/// </summary>
 public readonly struct QuadIndexBufferCacheKey
 {
     public int QuadCount { get; }

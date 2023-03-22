@@ -3,6 +3,9 @@ using Veldrid;
 
 namespace GameFramework;
 
+/// <summary>
+///     Used to cache static buffers. Mutation access is not enforced.
+/// </summary>
 public sealed class StaticDeviceBufferCache
 {
     private readonly GameApplication _application;
