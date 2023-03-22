@@ -1,15 +1,16 @@
 ﻿using System.Numerics;
-using GameFramework.Extensions;
 using GameFramework.Renderer.Batch;
 using MessagePack;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Veldrid;
-using static System.Net.Mime.MediaTypeNames;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace GameFramework.Renderer.Text;
 
+/// <summary>
+///     An SDF font uses low resolution SDF glyphs to render high quality text.
+/// </summary>
 public sealed class SdfFont
 {
     public SdfSheet Sheet { get; }
@@ -34,6 +35,13 @@ public sealed class SdfFont
         return Sheet.Map.Keys.Max(c => Measure(c, size, true).Y) + VerticalSpacing * size;
     }
 
+    /// <summary>
+    ///     Measures a character.
+    /// </summary>
+    /// <param name="c">The character to measure.</param>
+    /// <param name="size">The font size to use.</param>
+    /// <param name="withoutPadding">If true, no padding will be applied to this measurement, resulting in a close approximation of the character's size.</param>
+    /// <returns>The size of the character, if it were to be rendered.</returns>
     public Vector2 Measure(char c, float size, bool withoutPadding = false)
     {
         var properties = Sheet.GetProperties(c);
@@ -52,6 +60,14 @@ public sealed class SdfFont
         return glyphSize;
     }
 
+    /// <summary>
+    ///     Changes a tracking position after placing a character in the grid.
+    /// </summary>
+    /// <param name="x">The current horizontal position in the grid.</param>
+    /// <param name="y">The current vertical position in the grid.</param>
+    /// <param name="size">The font size to use.</param>
+    /// <param name="lineHeight">The line height, in units. This increment will be used when moving to a new row.</param>
+    /// <param name="c">The character to measure.</param>
     public void PlaceCharacter(ref float x, ref float y, float size, float lineHeight, char c)
     {
         if (c == ' ')
@@ -76,6 +92,11 @@ public sealed class SdfFont
         x += stride + (HorizontalSpacing * size);
     }
 
+    /// <summary>
+    ///     Saves this SDF font to a stream.
+    /// </summary>
+    /// <param name="stream">The stream to save to.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the glyph atlas is not available on the CPU side.</exception>
     public void Save(Stream stream)
     {
         var image = Sheet.SheetImage;
@@ -103,6 +124,12 @@ public sealed class SdfFont
         stream.Flush();
     }
 
+    /// <summary>
+    ///     Loads an SDF font from a stream.
+    /// </summary>
+    /// <param name="device">The graphics device that owns the graphics resources.</param>
+    /// <param name="stream">The stream to load from.</param>
+    /// <returns>An SDF font restored from the stream.</returns>
     public static SdfFont Load(GraphicsDevice device, Stream stream)
     {
         var storage = MessagePackSerializer.Deserialize<DiskStorage>(stream);
@@ -119,12 +146,15 @@ public sealed class SdfFont
         };
     }
 
-    public void Render(
-        QuadBatch batch, 
-        Vector2 position, 
-        string text, 
-        Vector3? color = null,
-        float size = 1)
+    /// <summary>
+    ///     Renders the text to the specified batch.
+    /// </summary>
+    /// <param name="batch">The batch to render to.</param>
+    /// <param name="position">The top left position of the text grid.</param>
+    /// <param name="text">The text to render. Newlines will result in new rows being added.</param>
+    /// <param name="color">The color to render with.</param>
+    /// <param name="size">The font size to use.</param>
+    public void Render(QuadBatch batch, Vector2 position, string text, Vector3? color = null, float size = 1)
     {
         var options = color == null ? Options : Options.WithColor(color.Value);
 
@@ -160,7 +190,13 @@ public sealed class SdfFont
             }
         }
     }
-
+    
+    /// <summary>
+    ///     Measures the size of a text grid.
+    /// </summary>
+    /// <param name="text">The text to measure.</param>
+    /// <param name="size">The font size to use.</param>
+    /// <returns>The size of the resulting text grid, if it were to be rendered.</returns>
     public Vector2 MeasureText(string text, float size)
     {
         var y = 0f;
