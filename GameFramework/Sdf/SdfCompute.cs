@@ -6,10 +6,18 @@ using System.Runtime.CompilerServices;
 
 namespace GameFramework.Sdf;
 
+/// <summary>
+///     Class with methods for computing SDF glyphs.
+/// </summary>
 public static class SdfCompute
 {
+    /// <summary>
+    ///     Thresholds the image to generate a bit grid.
+    /// </summary>
+    /// <param name="bitmap">The bitmap to threshold.</param>
+    /// <returns>A memory that can be used to create a <see cref="BitGrid"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    private static unsafe IMemoryOwner<byte> ExtractMask(Image<Rgba32> bitmap)
+    private static IMemoryOwner<byte> ExtractMask(Image<Rgba32> bitmap)
     {
         var length = bitmap.Width * bitmap.Height;
         
@@ -30,6 +38,14 @@ public static class SdfCompute
         return buffer;
     }
 
+    /// <summary>
+    ///     Generates a signed distance field from the specified image.
+    /// </summary>
+    /// <param name="glyph">The image to generate from.</param>
+    /// <param name="upscaleResolution">The resolution to query cells at. This affects the density field.</param>
+    /// <param name="size">Size hint for the final SDF image.</param>
+    /// <param name="padding">Padding pixels. Small values will cause the distance field to be cut off.</param>
+    /// <returns>A signed distance field image.</returns>
     public static Image<Rgba32> GenerateSignedDistanceField(
         Image<Rgba32> glyph,
         int upscaleResolution,
@@ -122,6 +138,16 @@ public static class SdfCompute
         return result;
     }
 
+    /// <summary>
+    ///     Searches the bit grid for neighbor candidates in a spiral pattern.
+    ///     This is generally faster than a brute force search, assuming that the neighbor is close to the pixel being searched. The pattern causes cache misses for large search areas.
+    /// </summary>
+    /// <param name="bitGrid">The bit grid to search in.</param>
+    /// <param name="pxX">The horizontal position of the target cell.</param>
+    /// <param name="pxY">The vertical position of the target cell.</param>
+    /// <param name="spread">The search size, in pixels.</param>
+    /// <param name="litPixels">All lit pixels in the grid. Used as a fallback for situations where a pixel that is out of bounds is searched.</param>
+    /// <returns>The distance to the closest pixel of a different state.</returns>
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static float Spiral(
         BitGrid bitGrid,

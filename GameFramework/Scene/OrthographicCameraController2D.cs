@@ -4,6 +4,9 @@ using Vortice.Mathematics;
 
 namespace GameFramework.Scene;
 
+/// <summary>
+///     Manages an <see cref="OrthographicCamera"/> and offers wrappers for 2D cameras and input handling.
+/// </summary>
 public sealed class OrthographicCameraController2D
 {
     public float TranslationInterpolate { get; set; }
@@ -14,8 +17,14 @@ public sealed class OrthographicCameraController2D
 
     public OrthographicCamera Camera { get; }
     
+    /// <summary>
+    ///     This maps keys to translation directions.
+    /// </summary>
     public Dictionary<Key, Direction2D> TranslationControls { get; }
 
+    /// <summary>
+    ///     This maps keys to rotation angles.
+    /// </summary>
     public Dictionary<Key, float> RotationControls { get; }
 
     public Vector3 FuturePosition { get; set; } = Vector3.Zero;
@@ -32,6 +41,15 @@ public sealed class OrthographicCameraController2D
 
     private float _currentRotation;
 
+    /// <summary>
+    ///     Creates a new instance of the OrthographicCameraController2D class.
+    /// </summary>
+    /// <param name="camera">The camera to wrap around.</param>
+    /// <param name="translationControls">The input keys to use for translation. If null, WASD keys are used.</param>
+    /// <param name="rotationControls">The input keys to use for rotation. If null, QE keys are used.</param>
+    /// <param name="translationInterpolate">The interpolation speed for translation.</param>
+    /// <param name="rotationInterpolate">The interpolation speed for rotation.</param>
+    /// <param name="zoomInterpolate">The interpolation speed for zoom.</param>
     public OrthographicCameraController2D(
         OrthographicCamera camera, 
         Dictionary<Key, Direction2D>? translationControls = null, 
@@ -65,6 +83,12 @@ public sealed class OrthographicCameraController2D
         Update(1, true);
     }
 
+    /// <summary>
+    ///     This is called to process a set of inputs and update the camera state.
+    /// </summary>
+    /// <param name="key">The key being pressed.</param>
+    /// <param name="translateCoefficient">Todo</param>
+    /// <param name="rotateCoefficient">Todo</param>
     public void ProcessKey(Key key, float translateCoefficient, float rotateCoefficient)
     {
         if (TranslationControls.TryGetValue(key, out var direction))
@@ -91,6 +115,7 @@ public sealed class OrthographicCameraController2D
         }
     }
 
+    // Todo: change the interpolation scheme to be time-independent
     public void Update(float factor, bool snap = false)
     {
         Camera.Position = snap || TranslationInterpolate == 0

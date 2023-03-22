@@ -2,6 +2,9 @@
 
 namespace GameFramework.Scene;
 
+/// <summary>
+///     Manages an orthographic projection matrix.
+/// </summary>
 public sealed class OrthographicCamera
 {
     private Vector3 _position;
@@ -25,6 +28,9 @@ public sealed class OrthographicCamera
     
     public Matrix4x4 CameraMatrix { get; private set; }
 
+    /// <summary>
+    ///     Sets the position of the view matrix. This will cause the camera matrix to be re-calculated.
+    /// </summary>
     public Vector3 Position
     {
         get => _position;
@@ -35,6 +41,9 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Sets the rotation of the view matrix. This will cause the camera matrix to be re-calculated.
+    /// </summary>
     public Quaternion Rotation
     {
         get => _rotation;
@@ -45,6 +54,9 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Sets the aspect ratio of the projection matrix. This will cause the matrix to be re-calculated.
+    /// </summary>
     public float AspectRatio
     {
         get => _aspectRatio;
@@ -55,6 +67,9 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Sets the near plane distance of the projection matrix. This will cause the matrix to be re-calculated.
+    /// </summary>
     public float Near
     {
         get => _near;
@@ -65,6 +80,9 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Sets the far plane distance of the projection matrix. This will cause the matrix to be re-calculated.
+    /// </summary>
     public float Far
     {
         get => _far;
@@ -75,6 +93,9 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Sets the zoom of the projection matrix. This will cause the matrix to be re-calculated.
+    /// </summary>
     public float Zoom
     {
         get => _zoom;
@@ -85,6 +106,10 @@ public sealed class OrthographicCamera
         }
     }
 
+    /// <summary>
+    ///     Rebuilds the matrices using the latest state.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the parameters caused the matrix to fail to build.</exception>
     private void UpdateMatrix()
     {
         var left = -_zoom * _aspectRatio * 0.5f;
