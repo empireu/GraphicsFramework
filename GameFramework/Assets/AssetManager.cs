@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using GameFramework.Assets.Attributes;
 using GameFramework.Renderer;
 using GameFramework.Renderer.Text;
 using SixLabors.ImageSharp;
@@ -23,7 +22,6 @@ public sealed class AssetManager
     public AssetManager(GameApplication application)
     {
         Application = application;
-
     }
 
     public SdfFont GetOrAddFont(IResourceKey key)
@@ -120,7 +118,6 @@ public sealed class AssetManager
     {
         return assembly.GetManifestResourceStream(name);
     }
-
 
     public static bool TryReadEmbeddedResource(string name, Assembly assembly, [NotNullWhen(true)] out byte[]? bytes)
     {
