@@ -3,6 +3,9 @@ using Veldrid.StartupUtilities;
 
 namespace GameFramework;
 
+/// <summary>
+///     Encapsulates some parameters used when creating a <see cref="GameApplication"/>
+/// </summary>
 public readonly struct GameApplicationDescription
 {
     public WindowCreateInfo WindowCreateInfo { get; }
@@ -25,7 +28,7 @@ public readonly struct GameApplicationDescription
                 1280, 
                 720, 
                 WindowState.Normal, 
-                "Game"),
+                ""),
 
             new GraphicsDeviceOptions
             {

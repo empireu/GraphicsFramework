@@ -9,25 +9,46 @@ using Size = System.Drawing.Size;
 
 namespace GameFramework;
 
+/// <summary>
+///     The game application creates and manages the native resources used to draw to the screen.
+/// </summary>
 public abstract class GameApplication
 {
     private readonly Sdl2Window _window;
     private readonly GraphicsDevice _device;
 
+    /// <summary>
+    ///     Gets the graphics device of the application.
+    /// </summary>
     public GraphicsDevice Device => _device;
 
+    /// <summary>
+    ///     Gets the window of the application.
+    /// </summary>
     public Sdl2Window Window => _window;
 
     private readonly CommandList _commandList;
 
+    /// <summary>
+    ///     Gets an input wrapper for the window.
+    /// </summary>
     public GameInput Input { get; }
 
+    /// <summary>
+    ///     Gets the latest <see cref="FrameStatus"/>.
+    /// </summary>
     public FrameStatus FrameStatus { get; private set; }
 
+    /// <summary>
+    ///     Gets the <see cref="GameApplicationResources"/> of this application.
+    /// </summary>
     public GameApplicationResources Resources { get; }
 
     private LayerCollection? _layers;
 
+    /// <summary>
+    ///     Gets the <see cref="LayerCollection"/> of this application. Accessing this before initialization will produce an error.
+    /// </summary>
     public LayerCollection Layers
     {
         get
@@ -41,10 +62,16 @@ public abstract class GameApplication
         }
     }
 
+    /// <summary>
+    ///     Gets or sets the background color of the backbuffer.
+    /// </summary>
     public RgbaFloat ClearColor { get; set; } = RgbaFloat.Grey;
 
     private IServiceProvider? _serviceProvider;
 
+    /// <summary>
+    ///     Gets the <see cref="IServiceProvider"/> of this application. Accessing this before initialization will produce an error.
+    /// </summary>
     public IServiceProvider ServiceProvider
     {
         get
@@ -102,7 +129,7 @@ public abstract class GameApplication
     }
 
     /// <summary>
-    ///     Called once before the service provider is built and before any updates occur.
+    ///     Called once before the service provider is built and before any updates occur. Services can be registered here.
     /// </summary>
     protected virtual void RegisterServices(ServiceCollection services) { }
 
@@ -111,6 +138,9 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void Initialize() { }
 
+    /// <summary>
+    ///     Called before the update loop begins.
+    /// </summary>
     protected virtual void BeforeStart()
     {
         foreach (var layer in Layers.FrontToBack)
@@ -130,6 +160,10 @@ public abstract class GameApplication
         }
     }
 
+    /// <summary>
+    ///     Called in the update loop.
+    /// </summary>
+    /// <param name="frameInfo"></param>
     protected virtual void Update(FrameInfo frameInfo)
     {
         foreach (var layer in Layers.FrontToBack)
@@ -139,7 +173,7 @@ public abstract class GameApplication
     }
 
     /// <summary>
-    ///     Called before Render.
+    ///     Called in the update loop, before Render.
     /// </summary>
     protected virtual void ProcessInput(FrameInfo frameInfo)
     {
@@ -159,7 +193,11 @@ public abstract class GameApplication
             Layers.SendEvent(in @event);
         }
     }
-
+    
+    /// <summary>
+    ///     Called in the update loop.
+    /// </summary>
+    /// <param name="frameInfo"></param>
     protected virtual void Render(FrameInfo frameInfo)
     {
         foreach (var layer in Layers.BackToFront)
@@ -214,6 +252,9 @@ public abstract class GameApplication
         Input.InputSnapshot = _window.PumpEvents();
     }
 
+    /// <summary>
+    ///     Runs the game application on the current thread. This should be the main thread of the program.
+    /// </summary>
     public void Run()
     {
         var services = new ServiceCollection();

@@ -4,6 +4,9 @@ using Veldrid;
 
 namespace GameFramework;
 
+/// <summary>
+///     Basic wrapper around the window's input system, with thread-safe access.
+/// </summary>
 public class GameInput
 {
     private readonly object _sync = new();
