@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Renderer\Shaders\ColoredQuadPixel.spirv" />
+    <None Remove="Renderer\Shaders\ColoredQuadVertex.spirv" />
+    <None Remove="Renderer\Shaders\SdfQuadPixel.spirv" />
+    <None Remove="Renderer\Shaders\SdfQuadVertex.spirv" />
+    <None Remove="Renderer\Shaders\TexturedQuadPixel.spirv" />
+    <None Remove="Renderer\Shaders\TexturedQuadVertex.spirv" />
+  </ItemGroup>
+
+  <ItemGroup>
+	    <EmbeddedResource Include="Renderer\Shaders\ColoredQuadPixel.spirv" />
+	    <EmbeddedResource Include="Renderer\Shaders\ColoredQuadVertex.spirv" />
+	    <EmbeddedResource Include="Renderer\Shaders\SdfQuadPixel.spirv" />
+	    <EmbeddedResource Include="Renderer\Shaders\SdfQuadVertex.spirv" />
+	    <EmbeddedResource Include="Renderer\Shaders\TexturedQuadPixel.spirv" />
+	    <EmbeddedResource Include="Renderer\Shaders\TexturedQuadVertex.spirv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.5.64-alpha" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
+    <PackageReference Include="Veldrid" Version="4.9.0-beta2" />
+    <PackageReference Include="Veldrid.ImageSharp" Version="4.9.0-beta2" />
+    <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
+    <PackageReference Include="Veldrid.StartupUtilities" Version="4.9.0-beta2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameFramework.Utilities\GameFramework.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Serializers\" />
+  </ItemGroup>
+
+</Project>

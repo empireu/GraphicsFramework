@@ -1,0 +1,31 @@
+#version 450
+
+layout (location = 0) in vec3 Position;
+layout (location = 1) in vec2 TextureCoordinate;
+layout (location = 2) in float Weight;
+layout (location = 3) in float Smoothing;
+layout (location = 4) in float Alpha;
+layout (location = 5) in vec3 Color;
+
+layout(location = 0) out vec2 VertexTextureCoordinate;
+layout(location = 1) out float VertexWeight;
+layout(location = 2) out float VertexSmoothing;
+layout(location = 3) out float VertexAlpha;
+layout(location = 4) out vec3 VertexColor;
+
+layout(set = 1, binding = 0) uniform Effects
+{
+    mat4 Transform;
+    vec4 Tint;
+};
+
+void main()
+{
+	gl_Position = Transform * vec4(Position, 1.0);
+
+    VertexTextureCoordinate = TextureCoordinate;
+	VertexWeight = Weight;
+	VertexSmoothing = Smoothing;
+	VertexAlpha = Alpha;
+	VertexColor = Color;
+}

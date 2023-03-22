@@ -1,0 +1,14 @@
+#version 450
+layout(location = 0) in vec4 VertexColor;
+layout(location = 0) out vec4 OutColor;
+
+layout(set = 0, binding = 0) uniform Effects
+{
+    mat4 Transform;
+    vec4 Tint;
+};
+
+void main()
+{
+    OutColor = VertexColor * Tint;
+}

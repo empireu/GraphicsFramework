@@ -1,0 +1,36 @@
+#version 450
+
+#define ALPHA_CUTOFF 0.0001
+
+layout(location = 0) in vec2 VertexTextureCoordinate;
+layout(location = 1) in float VertexWeight;
+layout(location = 2) in float VertexSmoothing;
+layout(location = 3) in float VertexAlpha;
+layout(location = 4) in vec3 VertexColor;
+
+layout(location = 0) out vec4 OutColor;
+
+layout(set = 0, binding = 0) uniform texture2D Texture;
+layout(set = 0, binding = 1) uniform sampler Sampler;
+
+layout(set = 1, binding = 0) uniform Effects
+{
+    mat4 Transform;
+    vec4 Tint;
+};
+
+void main() 
+{
+    float dist = (texture(sampler2D(Texture, Sampler), VertexTextureCoordinate) * Tint).r;
+    float alpha = smoothstep(VertexWeight - VertexSmoothing, VertexWeight + VertexSmoothing, dist);
+
+    vec3 color = VertexColor * alpha;
+    vec4 finalColor = vec4(color, alpha) * VertexAlpha;
+
+    if(finalColor.a < ALPHA_CUTOFF)
+    {
+        discard;
+    }
+
+    OutColor = finalColor;
+}
