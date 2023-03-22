@@ -4,6 +4,10 @@ using Veldrid;
 
 namespace GameFramework.Renderer;
 
+/// <summary>
+///     Holds many instances of <code>TData</code>. Multiple device buffers are used for storage.
+/// </summary>
+/// <typeparam name="TData">The data element to store.</typeparam>
 public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanaged
 {
     private readonly GraphicsDevice _device;
@@ -12,6 +16,13 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
 
     private DataBuffer? _latest;
 
+    /// <summary>
+    ///     Creates a new instance of the <code>DeviceBufferList</code> class.
+    /// </summary>
+    /// <param name="device">The graphics device that owns the resources.</param>
+    /// <param name="pool">The buffer pool to use.</param>
+    /// <param name="maxItemsPerBuffer">The number of items to store per buffer. This will control the size of the individual buffers that will be rented from the pool.</param>
+    /// <param name="usage">The buffer usage, passed to the device buffers.</param>
     public DeviceBufferList(GraphicsDevice device, DeviceBufferPool pool, int maxItemsPerBuffer, BufferUsage usage)
     {
         _device = device;
@@ -25,10 +36,16 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         Debug.Assert(_buffers.Count == 1 && _buffers[0] == _latest);
     }
 
+    /// <summary>
+    ///     The number of items stored per buffer.
+    /// </summary>
     public int MaxItemsPerBuffer { get; }
 
     private readonly List<DataBuffer> _buffers = new();
 
+    /// <summary>
+    ///     The buffers in use. All buffers but the last one are full with instances.
+    /// </summary>
     public IReadOnlyList<DataBuffer> Buffers => _buffers;
 
     private DataBuffer AddBuffer()
@@ -43,7 +60,12 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
 
         return result;
     }
-
+    
+    /// <summary>
+    ///     Gets a write buffer with space for at least one instance.
+    /// </summary>
+    /// <returns>A data buffer, with at least one instance of free space available.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if an internal state was broken.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private DataBuffer GetWriteBuffer()
     {
@@ -62,6 +84,10 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         return _latest;
     }
 
+    /// <summary>
+    ///     Adds an instance to the buffer.
+    /// </summary>
+    /// <param name="instance">The instance to add.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(ref TData instance)
     {
@@ -70,6 +96,9 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         view[buffer.InstanceCount++] = instance;
     }
 
+    /// <summary>
+    ///     Returns all used buffers to the pool.
+    /// </summary>
     private void ReturnAll()
     {
         foreach (var dataBuffer in _buffers)
@@ -85,6 +114,9 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         _buffers.Clear();
     }
 
+    /// <summary>
+    ///     Clears all data stored in this <code>DeviceBufferList</code>.
+    /// </summary>
     public void Clear()
     {
         ReturnAll();
@@ -92,10 +124,16 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         _latest = AddBuffer();
     }
 
+    /// <summary>
+    ///     Represents a mapped device buffer with instance count tracking.
+    /// </summary>
     public sealed class DataBuffer
     {
         private readonly GraphicsDevice _device;
 
+        /// <summary>
+        ///     True if this device is mapped to a view. Otherwise, false.
+        /// </summary>
         public bool IsMapped { get; private set; }
 
         public DataBuffer(GraphicsDevice device, DeviceBuffer instanceDataBuffer)
@@ -104,6 +142,9 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
             InstanceDataBuffer = instanceDataBuffer;
         }
 
+        /// <summary>
+        ///     Prepares this buffer for drawing. Internally, this un-maps the buffer.
+        /// </summary>
         public void PrepareDraw()
         {
             if (IsMapped)
@@ -112,6 +153,9 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
             }
         }
 
+        /// <summary>
+        ///     Prepares this buffer for writing. Internally, this maps the buffer.
+        /// </summary>
         public void PrepareWriting()
         {
             if (!IsMapped)
@@ -120,12 +164,25 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
             }
         }
 
+        /// <summary>
+        ///     Gets the underlying device buffer.
+        /// </summary>
         public DeviceBuffer InstanceDataBuffer { get; }
 
+        /// <summary>
+        ///     Gets the mapped view. Only valid if <see cref="IsMapped"/> is true.
+        /// </summary>
         public MappedResourceView<TData> InstanceDataView { get; private set; }
 
+        /// <summary>
+        ///     Gets the number of instances stored in this buffer.
+        /// </summary>
         public int InstanceCount { get; set; }
 
+        /// <summary>
+        ///     Maps the device buffer, making access via <see cref="InstanceDataView"/> possible.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if this buffer is already mapped.</exception>
         public void Map()
         {
             if (IsMapped)
@@ -137,6 +194,10 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
             IsMapped = true;
         }
 
+        /// <summary>
+        ///     Un-maps the device buffer, invalidating the <see cref="InstanceDataView"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if this buffer is not mapped.</exception>
         public void UnMap()
         {
             if (!IsMapped)
@@ -150,6 +211,9 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
         }
     }
 
+    /// <summary>
+    ///     Returns all resources to the pool and marks this DeviceBufferList as invalid.
+    /// </summary>
     public void Dispose()
     {
         ReturnAll();
@@ -161,6 +225,8 @@ public unsafe class DeviceBufferList<TData> : IDisposable where TData : unmanage
 
     ~DeviceBufferList()
     {
+        // Dispose should always be called explicitly.
+
         Debug.Fail("Destroying device buffer list.");
     }
 }

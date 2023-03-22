@@ -3,6 +3,10 @@ using MessagePack;
 
 namespace GameFramework.Renderer;
 
+/// <summary>
+///     This is a UV coordinate representation using 4 2-component vectors, defining the four corners of the texture window.
+///     This defines the bounds of a parallelogram.
+/// </summary>
 [MessagePackObject]
 public struct TextureCoordinate4
 {
@@ -10,7 +14,6 @@ public struct TextureCoordinate4
     public static readonly Vector2 Uv1Full = new(1, 0);
     public static readonly Vector2 Uv2Full = new(0, 0);
     public static readonly Vector2 Uv3Full = new(0, 1);
-
 
     [Key(0)]
     public Vector2 BottomRight;

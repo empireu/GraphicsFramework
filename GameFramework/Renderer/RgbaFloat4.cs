@@ -4,6 +4,9 @@ using Veldrid;
 
 namespace GameFramework.Renderer;
 
+/// <summary>
+///     Holds a set of 4 <see cref="RgbaFloat"/>.
+/// </summary>
 public struct RgbaFloat4
 {
     public RgbaFloat C0;
@@ -11,7 +14,6 @@ public struct RgbaFloat4
     public RgbaFloat C2;
     public RgbaFloat C3;
 
-   
     public RgbaFloat4(float r, float g, float b, float a)
     {
         C0 = C1 = C2 = C3 = new RgbaFloat(r, g, b, a);

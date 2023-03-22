@@ -2,6 +2,9 @@
 
 namespace GameFramework.Renderer;
 
+/// <summary>
+///     Pair of a Texture and a Sampler.
+/// </summary>
 public readonly struct TextureSampler
 {
     public TextureView Texture { get; }
