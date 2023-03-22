@@ -1,5 +1,8 @@
 ﻿namespace GameFramework.Utilities;
 
+/// <summary>
+///     Crude rectangle packing algorithm.
+/// </summary>
 public static class RectanglePacker
 {
     public class PackingRectangle
@@ -58,5 +61,4 @@ public static class RectanglePacker
             rect.WasPacked = true;
         }
     }
-
 }

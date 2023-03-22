@@ -1,5 +1,8 @@
 ﻿namespace GameFramework.Utilities;
 
+/// <summary>
+///     Utility class for averaging a small set of values. This results in fewer numerical errors than a continuous average.
+/// </summary>
 public sealed class AverageList
 {
     private readonly int _count;

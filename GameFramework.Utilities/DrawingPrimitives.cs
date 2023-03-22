@@ -5,6 +5,12 @@ namespace GameFramework.Utilities;
 
 public static class DrawingPrimitives
 {
+    /// <summary>
+    ///     Implementation of a line drawing rasterization algorithm.
+    /// </summary>
+    /// <param name="start">The start point of the line.</param>
+    /// <param name="end">The end point of the line.</param>
+    /// <returns>An enumerator trough all cells intersected by this line.</returns>
     [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
     public static IEnumerable<Point> PixelLine(Point start, Point end)
     {
@@ -57,6 +63,12 @@ public static class DrawingPrimitives
         }
     }
 
+    /// <summary>
+    ///     Implementation of a circle filling algorithm.
+    /// </summary>
+    /// <param name="center">The center point of the circle.</param>
+    /// <param name="radius">The radius of the circle.</param>
+    /// <returns>An enumerator trough all cells intersected by this circle.</returns>
     public static IEnumerable<Point> PixelCircle(Point center, int radius)
     {
         for (var y = -radius; y <= radius; y++)
