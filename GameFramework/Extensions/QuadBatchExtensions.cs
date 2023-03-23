@@ -4,7 +4,6 @@ using GameFramework.Renderer;
 using GameFramework.Renderer.Batch;
 using GameFramework.Renderer.VertexFormats;
 using GameFramework.Utilities.Extensions;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace GameFramework.Extensions;
 

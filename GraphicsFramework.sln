@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.Utilities", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.ImGui", "GameFramework.ImGui\GameFramework.ImGui.csproj", "{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.PostProcessing", "GameFramework.PostProcessing\GameFramework.PostProcessing.csproj", "{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameFramework.PostProcessing.Effects", "GameFramework.PostProcessing.Effects\GameFramework.PostProcessing.Effects.csproj", "{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +45,22 @@ Global
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Release|x64.ActiveCfg = Release|x64
 		{CD6F9946-3084-40D6-B55D-9EEFDEEFA634}.Release|x64.Build.0 = Release|x64
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Debug|x64.ActiveCfg = Debug|x64
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Debug|x64.Build.0 = Debug|x64
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Release|x64.ActiveCfg = Release|x64
+		{4CE12F0A-C0B9-4D0C-A6F4-4B9E9BFD5036}.Release|x64.Build.0 = Release|x64
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Debug|x64.ActiveCfg = Debug|x64
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Debug|x64.Build.0 = Debug|x64
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Release|x64.ActiveCfg = Release|x64
+		{D5465377-31B1-42A0-AFA4-CEF4F6F9DC76}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

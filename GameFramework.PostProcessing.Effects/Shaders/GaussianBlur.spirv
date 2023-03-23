@@ -1,0 +1,40 @@
+#version 450
+#define TAU 6.28318530718
+
+layout(location = 0) in vec2 VertexTextureCoordinate;
+layout(location = 0) out vec4 OutColor;
+
+layout(set = 0, binding = 0) uniform texture2D Texture;
+layout(set = 0, binding = 1) uniform sampler Sampler;
+
+layout(set = 1, binding = 0) uniform Settings
+{
+    vec2 TextureSize;
+    float BlurDirections;
+    float BlurQuality;
+    float BlurSize;
+};
+
+vec4 sampleColor(vec2 coordinate)
+{
+    return texture(sampler2D(Texture, Sampler), coordinate);
+}
+
+void main()
+{   
+    vec2 radius = BlurSize / TextureSize.xy;
+
+    vec4 color = sampleColor(VertexTextureCoordinate);
+        
+    for(float d = 0.0; d < TAU; d += TAU / BlurDirections)
+    {
+        for(float i = 1.0 / BlurQuality; i <= 1.0; i += 1.0 / BlurQuality)
+        {
+            color += sampleColor(VertexTextureCoordinate + vec2(cos(d), sin(d)) * radius * i);	
+        }
+    }
+    
+    color /= BlurQuality * BlurDirections - 15.0;
+    
+    OutColor = color;
+}

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GameFramework.Utilities\GameFramework.Utilities.csproj" />
     <ProjectReference Include="..\GameFramework\GameFramework.csproj" />
   </ItemGroup>
 

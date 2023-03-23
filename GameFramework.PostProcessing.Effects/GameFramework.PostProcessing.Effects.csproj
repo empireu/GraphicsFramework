@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Shaders\GaussianBlur.spirv" />
+    <None Remove="Shaders\Sdf.spirv" />
+    <None Remove="Shaders\Threshold.spirv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\GaussianBlur.spirv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameFramework.PostProcessing\GameFramework.PostProcessing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\Threshold.spirv" />
+  </ItemGroup>
+
+</Project>

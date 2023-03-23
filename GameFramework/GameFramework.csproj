@@ -39,11 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameFramework.Utilities\GameFramework.Utilities.csproj" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\GameFramework.Utilities\GameFramework.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
