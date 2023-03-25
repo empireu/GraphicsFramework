@@ -252,6 +252,11 @@ public abstract class GameApplication
         Input.InputSnapshot = _window.PumpEvents();
     }
 
+    protected virtual IServiceProvider BuildLayerServiceProvider(ServiceCollection registeredServices)
+    {
+        return registeredServices.BuildServiceProvider();
+    }
+
     /// <summary>
     ///     Runs the game application on the current thread. This should be the main thread of the program.
     /// </summary>
@@ -262,7 +267,7 @@ public abstract class GameApplication
         RegisterInternalServices(services);
         RegisterServices(services);
 
-        _serviceProvider = services.BuildServiceProvider();
+        _serviceProvider = BuildLayerServiceProvider(services);
 
         _layers = new LayerCollection(_serviceProvider);
 
