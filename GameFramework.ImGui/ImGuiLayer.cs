@@ -10,17 +10,18 @@ namespace GameFramework.ImGui;
 public sealed class ImGuiLayer : Layer
 {
     private readonly GameApplication _application;
-    private readonly ImGuiRenderer _renderer;
     private readonly CommandList _commandList;
     private readonly ImGuiIOPtr _io;
 
     public bool EnableStats { get; set; }
 
+    public ImGuiRenderer Renderer { get; }
+
     public ImGuiLayer(GameApplication application)
     {
        
         _application = application;
-        _renderer = new ImGuiRenderer(application.Device, application.Device.SwapchainFramebuffer.OutputDescription,
+        Renderer = new ImGuiRenderer(application.Device, application.Device.SwapchainFramebuffer.OutputDescription,
             application.Window.Width, application.Window.Height);
 
         _io = ImGuiNet.GetIO();
@@ -54,9 +55,9 @@ public sealed class ImGuiLayer : Layer
 
     protected override void BeforeUpdate(FrameInfo frameInfo)
     {
-        _renderer.Update(frameInfo.DeltaTime, _application.Input.InputSnapshot);
+        Renderer.Update(frameInfo.DeltaTime, _application.Input.InputSnapshot);
         
-        Submit?.Invoke(_renderer);
+        Submit?.Invoke(Renderer);
 
         if (EnableStats)
         {
@@ -92,7 +93,7 @@ public sealed class ImGuiLayer : Layer
 
     protected override void Resize(Size size)
     {
-        _renderer.WindowResized(size.Width, size.Height);
+        Renderer.WindowResized(size.Width, size.Height);
     }
 
     protected override void Render(FrameInfo frameInfo)
@@ -100,7 +101,7 @@ public sealed class ImGuiLayer : Layer
         _commandList.Begin();
         _commandList.SetFramebuffer(_application.Device.SwapchainFramebuffer);
 
-        _renderer.Render(_application.Device, _commandList);
+        Renderer.Render(_application.Device, _commandList);
 
         _commandList.End();
         _application.Device.SubmitCommands(_commandList);
