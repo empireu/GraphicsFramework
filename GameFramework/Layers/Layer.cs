@@ -24,7 +24,7 @@ public abstract class Layer
     }
 
     /// <summary>
-    ///     Called when the layer is removed from the collection 
+    ///     Called when the layer is removed from the collection via a call to <see cref="LayerCollection.Remove"/>
     /// </summary>
     protected internal virtual void OnRemoved()
     {
