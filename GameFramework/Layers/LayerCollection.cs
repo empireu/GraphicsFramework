@@ -16,7 +16,8 @@ public sealed class LayerCollection
     }
 
     /// <summary>
-    ///     Used to add a layer to this collection. A layer cannot be added twice; this will result in an exception.
+    ///     Adds a layer to this collection.
+    ///     <seealso cref="Layer.OnAdded"/>
     /// </summary>
     /// <param name="layer">The layer to add.</param>
     /// <exception cref="InvalidOperationException">Thrown if this layer was added prior to this call.</exception>
@@ -30,6 +31,22 @@ public sealed class LayerCollection
         _layers.Add(layer);
 
         layer.OnAdded();
+    }
+
+    /// <summary>
+    ///     Removes a layer from this collection.
+    ///     <seealso cref="Layer.OnRemoved"/>
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <exception cref="InvalidOperationException">Thrown if this layer did not exist in the collection.</exception>
+    public void RemoveLayer(Layer layer)
+    {
+        if (!_layers.Remove(layer))
+        {
+            throw new InvalidOperationException($"The layer {layer} did not exist in the collection.");
+        }
+
+        layer.OnRemoved();
     }
 
     /// <summary>
@@ -58,24 +75,36 @@ public sealed class LayerCollection
     }
 
     /// <summary>
-    ///     Returns an enumerable that will traverse the layers in a front-to-back order. This is useful for input events.
+    ///     Returns an enumerable that will traverse the layers in a front-to-back order.
+    ///     This is useful for input events.
     /// </summary>
     public IEnumerable<Layer> FrontToBack => _layers;
 
     /// <summary>
-    ///     Returns an enumerable that will traverse the layers in a back-to-front order. This is useful for rendering.
+    ///     Returns an enumerable that will traverse enabled layers (<see cref="Layer.IsEnabled"/>) in a front-to-back order.
+    /// </summary>
+    public IEnumerable<Layer> FrontToBackEnabled => FrontToBack.Where(x => x.IsEnabled);
+
+    /// <summary>
+    ///     Returns an enumerable that will traverse the layers in a back-to-front order.
     /// </summary>
     public IEnumerable<Layer> BackToFront => Enumerable.Reverse(_layers);
 
     /// <summary>
+    ///     Returns an enumerable that will traverse enabled layers (<see cref="Layer.IsEnabled"/>) in a back-to-front order.
+    /// </summary>
+    public IEnumerable<Layer> BackToFrontEnabled => BackToFront.Where(x => x.IsEnabled);
+
+    /// <summary>
     ///     Sends an event down the layer stack, stopping once the event gets handled.
+    ///     Only layers that are enabled (<see cref="Layer.IsEnabled"/>) are considered.
     /// </summary>
     /// <typeparam name="T">The type of event to send.</typeparam>
     /// <param name="event">The event instance to send.</param>
     /// <returns>The layer that handled the event, if any.</returns>
     public Layer? SendEvent<T>(in T @event)
     {
-        foreach (var layer in FrontToBack)
+        foreach (var layer in FrontToBackEnabled)
         {
             if (layer.Handle(@event))
             {

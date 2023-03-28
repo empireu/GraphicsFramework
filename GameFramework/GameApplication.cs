@@ -143,7 +143,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void BeforeStart()
     {
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.BeforeStart();
         }
@@ -154,7 +154,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void BeforeUpdate(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.BeforeUpdate(frameInfo);
         }
@@ -166,7 +166,7 @@ public abstract class GameApplication
     /// <param name="frameInfo"></param>
     protected virtual void Update(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.Update(frameInfo);
         }
@@ -200,7 +200,7 @@ public abstract class GameApplication
     /// <param name="frameInfo"></param>
     protected virtual void Render(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.BackToFront)
+        foreach (var layer in Layers.BackToFrontEnabled)
         {
             layer.Render(frameInfo);
         }
@@ -211,7 +211,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void AfterRender(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.AfterRender(frameInfo);
         }
@@ -221,7 +221,7 @@ public abstract class GameApplication
     {
         _device.ResizeMainWindow((uint)_window.Width, (uint)_window.Height);
 
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.Resize(size);
         }
@@ -232,7 +232,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void Destroy()
     {
-        foreach (var layer in Layers.FrontToBack)
+        foreach (var layer in Layers.FrontToBackEnabled)
         {
             layer.Destroy();
         }

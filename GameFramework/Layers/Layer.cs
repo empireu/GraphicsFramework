@@ -8,11 +8,25 @@ namespace GameFramework.Layers;
 public abstract class Layer
 {
     private readonly Dictionary<Type, Delegate> _handlers = new();
-    
+
+    /// <summary>
+    ///     If true, this layer will be included in the update loop and will be eligible to receive events.
+    ///     Otherwise, this layer will not receive any update calls or events from the framework.
+    /// </summary>
+    public bool IsEnabled { get; set; } = false;
+
     /// <summary>
     ///     Called after the layer was added to the LayerCollection.
     /// </summary>
     protected internal virtual void OnAdded()
+    {
+
+    }
+
+    /// <summary>
+    ///     Called when the layer is removed from the collection 
+    /// </summary>
+    protected internal virtual void OnRemoved()
     {
 
     }
