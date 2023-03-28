@@ -8,12 +8,46 @@ namespace GameFramework.Layers;
 public abstract class Layer
 {
     private readonly Dictionary<Type, Delegate> _handlers = new();
+    private bool _isEnabled = true;
 
     /// <summary>
     ///     If true, this layer will be included in the update loop and will be eligible to receive events.
     ///     Otherwise, this layer will not receive any update calls or events from the framework.
     /// </summary>
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled 
+    {
+        get => _isEnabled;
+        set
+        {
+            _isEnabled = value;
+
+            OnEnableChanged();
+        }
+    }
+
+    /// <summary>
+    ///     Sets <see cref="IsEnabled"/> to true.
+    /// </summary>
+    public void Enable()
+    {
+        IsEnabled = true;
+    }
+    
+    /// <summary>
+    ///     Sets <see cref="IsEnabled"/> to false.
+    /// </summary>
+    public void Disable()
+    {
+        IsEnabled = false;
+    }
+
+    /// <summary>
+    ///     Calls when the enabled state changes.
+    /// </summary>
+    protected virtual void OnEnableChanged()
+    {
+
+    }
 
     /// <summary>
     ///     Called after the layer was added to the LayerCollection.
@@ -24,7 +58,7 @@ public abstract class Layer
     }
 
     /// <summary>
-    ///     Called when the layer is removed from the collection via a call to <see cref="LayerCollection.Remove"/>
+    ///     Called when the layer is removed from the collection via a call to <see cref="LayerCollection.RemoveLayer"/>
     /// </summary>
     protected internal virtual void OnRemoved()
     {
