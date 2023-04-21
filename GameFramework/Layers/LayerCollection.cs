@@ -74,6 +74,8 @@ public sealed class LayerCollection
         AddLayer(instance);
     }
 
+    public bool Contains(Layer layer) => _layers.Contains(layer);
+
     /// <summary>
     ///     Returns an enumerable that will traverse the layers in a front-to-back order.
     ///     This is useful for input events.

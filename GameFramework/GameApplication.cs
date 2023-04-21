@@ -138,12 +138,38 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void Initialize() { }
 
+    private void LayerScanFtb(Action<Layer> action)
+    {
+        var original = Layers.FrontToBackEnabled.ToArray();
+
+        foreach (var layer in original)
+        {
+            if (Layers.Contains(layer))
+            {
+                action(layer);
+            }
+        }
+    }
+
+    private void LayerScanBtf(Action<Layer> action)
+    {
+        var original = Layers.BackToFrontEnabled.ToArray();
+
+        foreach (var layer in original)
+        {
+            if (Layers.Contains(layer))
+            {
+                action(layer);
+            }
+        }
+    }
+
     /// <summary>
     ///     Called before the update loop begins.
     /// </summary>
     protected virtual void BeforeStart()
     {
-        foreach (var layer in Layers.FrontToBackEnabled)
+        foreach (var layer in Layers.FrontToBackEnabled.ToArray())
         {
             layer.BeforeStart();
         }
@@ -154,10 +180,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void BeforeUpdate(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBackEnabled)
-        {
-            layer.BeforeUpdate(frameInfo);
-        }
+        LayerScanFtb(l => l.BeforeUpdate(frameInfo));
     }
 
     /// <summary>
@@ -166,10 +189,7 @@ public abstract class GameApplication
     /// <param name="frameInfo"></param>
     protected virtual void Update(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBackEnabled)
-        {
-            layer.Update(frameInfo);
-        }
+        LayerScanFtb(l => l.Update(frameInfo));
     }
 
     /// <summary>
@@ -200,10 +220,7 @@ public abstract class GameApplication
     /// <param name="frameInfo"></param>
     protected virtual void Render(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.BackToFrontEnabled)
-        {
-            layer.Render(frameInfo);
-        }
+        LayerScanBtf(l => l.Render(frameInfo));
     }
 
     /// <summary>
@@ -211,20 +228,14 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void AfterRender(FrameInfo frameInfo)
     {
-        foreach (var layer in Layers.FrontToBackEnabled)
-        {
-            layer.AfterRender(frameInfo);
-        }
+        LayerScanFtb(l => l.AfterRender(frameInfo));
     }
 
     protected virtual void Resize(Size size)
     {
         _device.ResizeMainWindow((uint)_window.Width, (uint)_window.Height);
 
-        foreach (var layer in Layers.FrontToBackEnabled)
-        {
-            layer.Resize(size);
-        }
+        LayerScanFtb(l => l.Resize(size));
     }
 
     /// <summary>
@@ -232,7 +243,7 @@ public abstract class GameApplication
     /// </summary>
     protected virtual void Destroy()
     {
-        foreach (var layer in Layers.FrontToBackEnabled)
+        foreach (var layer in Layers.FrontToBackEnabled.ToArray())
         {
             layer.Destroy();
         }

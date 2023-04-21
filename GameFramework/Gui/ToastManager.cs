@@ -42,6 +42,7 @@ public sealed class ToastManagerOptions
     public Vector4 BorderColor = new(0.1f, 0.3f, 0.5f, 0.2f);
     public Vector4 InitialColor = new(1, 0.2f, 0.4f, 0.95f);
     public Vector4 FinalColor = new(0.1f, 1f, 0f, 0.1f);
+    public const float DefaultEaseIn = 1;
 
     public ToastManager.AnimationDelegate? Animation = (notification, elapsed, position, size) =>
     {
@@ -56,13 +57,12 @@ public sealed class ToastManagerOptions
             return t * t;
         }
 
-        const double easeIn = 1;
         const double easeOut = 0.5;
 
-        if (elapsed < easeIn)
+        if (elapsed < DefaultEaseIn)
         {
             return new Vector2((float)(size.X - EaseOutElastic(
-                MathUtilities.MapRange(elapsed, 0, easeIn, 0, 1)) * size.X), 0);
+                MathUtilities.MapRange(elapsed, 0, DefaultEaseIn, 0, 1)) * size.X), 0);
         }
 
         if (elapsed > notification.Duration - easeOut)
@@ -86,10 +86,10 @@ public sealed class ToastManager
     public delegate Vector2 AnimationDelegate(ToastNotification notification, double elapsed, Vector2 position, Vector2 size);
 
     private readonly SdfFont _font;
-    private readonly ToastManagerOptions _options;
     private readonly List<ToastNotification> _notifications = new();
     private readonly Queue<ToastNotification> _removeQueue = new();
     private readonly Stopwatch _stopWatch = Stopwatch.StartNew();
+    public ToastManagerOptions Options { get; }
 
     public void Remove(ToastNotification notification)
     {
@@ -106,7 +106,7 @@ public sealed class ToastManager
         options ??= new ToastManagerOptions();
 
         _font = font;
-        _options = options;
+        Options = options;
     }
 
     public void Add(ToastNotification notification)
@@ -133,43 +133,43 @@ public sealed class ToastManager
             var progress = (float)(elapsed / toastNotification.Duration);
 
             var size = _font.MeasureText(toastNotification.DisplayedString, fontSize) * 1.1f;
-            var position = new Vector2(edgeX - size.X - _options.DrawMargin, y);
+            var position = new Vector2(edgeX - size.X - Options.DrawMargin, y);
 
-            if (_options.Animation != null)
+            if (Options.Animation != null)
             {
-                position += _options.Animation(toastNotification, elapsed, position, size);
+                position += Options.Animation(toastNotification, elapsed, position, size);
             }
 
-            batch.Quad(position, size, Vector4.Lerp(_options.InitialColor, _options.FinalColor, progress), align: AlignMode.TopLeft);
+            batch.Quad(position, size, Vector4.Lerp(Options.InitialColor, Options.FinalColor, progress), align: AlignMode.TopLeft);
 
-            _font.Render(batch, position + new Vector2(_options.DrawMargin, _options.DrawMargin), toastNotification.DisplayedString, size: fontSize);
+            _font.Render(batch, position + new Vector2(Options.DrawMargin, Options.DrawMargin), toastNotification.DisplayedString, size: fontSize);
 
             // upper border
             batch.Quad(
                 new Vector2(position.X, position.Y),
-                new Vector2(size.X + _options.BorderThickness, _options.BorderThickness),
-                _options.BorderColor, align: AlignMode.TopLeft);
+                new Vector2(size.X + Options.BorderThickness, Options.BorderThickness),
+                Options.BorderColor, align: AlignMode.TopLeft);
 
             // lower border
             batch.Quad(
                 new Vector2(position.X, position.Y - size.Y),
-                new Vector2(size.X + _options.BorderThickness, _options.BorderThickness),
-                _options.BorderColor, align: AlignMode.TopLeft);
+                new Vector2(size.X + Options.BorderThickness, Options.BorderThickness),
+                Options.BorderColor, align: AlignMode.TopLeft);
 
             // left border
             batch.Quad(
                 new Vector2(position.X, position.Y),
-                new Vector2(_options.BorderThickness, size.Y + _options.BorderThickness),
-                _options.BorderColor, align: AlignMode.TopLeft);
+                new Vector2(Options.BorderThickness, size.Y + Options.BorderThickness),
+                Options.BorderColor, align: AlignMode.TopLeft);
 
             // right border
             batch.Quad(
                 new Vector2(position.X + size.X, position.Y),
-                new Vector2(_options.BorderThickness, size.Y + _options.BorderThickness),
-                _options.BorderColor, align: AlignMode.TopLeft);
+                new Vector2(Options.BorderThickness, size.Y + Options.BorderThickness),
+                Options.BorderColor, align: AlignMode.TopLeft);
 
 
-            y += size.Y + _options.YOffset;
+            y += size.Y + Options.YOffset;
         }
 
         while (_removeQueue.TryDequeue(out var removed))
