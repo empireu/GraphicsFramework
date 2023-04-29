@@ -61,6 +61,11 @@ internal sealed class TexturedQuadBuffer<TQuad> where TQuad : unmanaged
     {
         ResourceSet resourceSet;
 
+        if (ts.IsInvalid)
+        {
+            throw new ArgumentException("Invalid texture-sampler", nameof(ts));
+        }
+
         if (_lastSet == null || _lastSet.Value.ts != ts)
         {
             resourceSet = _textureResourceSetCache.GetOrAdd(ts, _ => _application.Resources.Factory.CreateResourceSet(

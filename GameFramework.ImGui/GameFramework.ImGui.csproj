@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" Version="1.89.4" />
+    <PackageReference Include="ImGui.NET" Version="1.89.5" />
     <PackageReference Include="Veldrid.ImGui" Version="5.89.2-ga121087cad" />
   </ItemGroup>
 

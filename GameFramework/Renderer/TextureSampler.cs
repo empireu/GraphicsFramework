@@ -11,6 +11,8 @@ public readonly struct TextureSampler
 
     public Sampler Sampler { get; }
 
+    public bool IsInvalid => Texture == null || Sampler == null || Texture.IsDisposed || Sampler.IsDisposed;
+
     public TextureSampler(TextureView texture, Sampler sampler)
     {
         Texture = texture;
