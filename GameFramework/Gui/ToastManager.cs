@@ -88,7 +88,7 @@ public sealed class ToastManager
     private readonly SdfFont _font;
     private readonly List<ToastNotification> _notifications = new();
     private readonly Queue<ToastNotification> _removeQueue = new();
-    private readonly Stopwatch _stopWatch = Stopwatch.StartNew();
+    public Stopwatch StopWatch { get; } = Stopwatch.StartNew();
     public ToastManagerOptions Options { get; }
 
     public void Remove(ToastNotification notification)
@@ -98,7 +98,7 @@ public sealed class ToastManager
 
     public void ResetTimer(ToastNotification notification)
     {
-        notification.AddedTimestamp = _stopWatch.Elapsed.TotalSeconds;
+        notification.AddedTimestamp = StopWatch.Elapsed.TotalSeconds;
     }
 
     public ToastManager(SdfFont font, ToastManagerOptions? options = null)
@@ -122,7 +122,7 @@ public sealed class ToastManager
 
         foreach (var toastNotification in _notifications)
         {
-            var elapsed = _stopWatch.Elapsed.TotalSeconds - toastNotification.AddedTimestamp;
+            var elapsed = StopWatch.Elapsed.TotalSeconds - toastNotification.AddedTimestamp;
 
             if (elapsed > toastNotification.Duration)
             {
