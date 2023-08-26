@@ -10,10 +10,10 @@ namespace GameFramework.Extensions;
 
 public readonly struct QuadColors
 {
-    public required RgbaFloat C0 { get; init; }
-    public required RgbaFloat C1 { get; init; }
-    public required RgbaFloat C2 { get; init; }
-    public required RgbaFloat C3 { get; init; }
+    public RgbaFloat C0 { get; init; }
+    public RgbaFloat C1 { get; init; }
+    public RgbaFloat C2 { get; init; }
+    public RgbaFloat C3 { get; init; }
 
     public QuadColors(RgbaFloat f)
     {
