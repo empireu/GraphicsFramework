@@ -15,6 +15,32 @@ public readonly struct QuadColors
     public required RgbaFloat C2 { get; init; }
     public required RgbaFloat C3 { get; init; }
 
+    public QuadColors(RgbaFloat f)
+    {
+        C0 = f;
+        C1 = f;
+        C2 = f;
+        C3 = f;
+    }
+   
+    public QuadColors(Vector4 f)
+    {
+        var c = new RgbaFloat(f);
+        C0 = c;
+        C1 = c;
+        C2 = c;
+        C3 = c;
+    }
+
+    public QuadColors(float r, float g, float b, float a)
+    {
+        var c = new RgbaFloat(r, g, b, a);
+        C0 = c;
+        C1 = c;
+        C2 = c;
+        C3 = c;
+    }
+
     public static QuadColors FromZOrder(
         RgbaFloat topLeft,
         RgbaFloat topRight,
