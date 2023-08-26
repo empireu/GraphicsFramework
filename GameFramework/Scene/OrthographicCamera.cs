@@ -2,17 +2,19 @@
 
 namespace GameFramework.Scene;
 
-/// <summary>
-///     Manages an orthographic projection matrix.
-/// </summary>
 public sealed class OrthographicCamera
 {
-    private Vector3 _position;
-    private Quaternion _rotation;
-    private float _aspectRatio;
-    private float _near;
-    private float _far;
-    private float _zoom;
+    private Vector3 _position = Vector3.Zero;
+    private Quaternion _rotation = Quaternion.Identity;
+    private float _aspectRatio = 1f;
+    private float _near = 0.001f;
+    private float _far = 10000f;
+    private float _zoom = 1f;
+
+    public OrthographicCamera()
+    {
+        UpdateMatrix();
+    }
 
     public OrthographicCamera(float aspectRatio, float near, float far)
     {
@@ -28,88 +30,88 @@ public sealed class OrthographicCamera
     
     public Matrix4x4 CameraMatrix { get; private set; }
 
-    /// <summary>
-    ///     Sets the position of the view matrix. This will cause the camera matrix to be re-calculated.
-    /// </summary>
+    #region Settings
+
     public Vector3 Position
     {
         get => _position;
         set
         {
-            _position = value;
-            UpdateMatrix();
+            if (!value.Equals(_position))
+            {
+                _position = value;
+                UpdateMatrix();
+            }
         }
     }
 
-    /// <summary>
-    ///     Sets the rotation of the view matrix. This will cause the camera matrix to be re-calculated.
-    /// </summary>
     public Quaternion Rotation
     {
         get => _rotation;
         set
         {
-            _rotation = value;
-            UpdateMatrix();
+            if (!value.Equals(_rotation))
+            {
+                _rotation = value;
+                UpdateMatrix();
+            }
         }
     }
 
-    /// <summary>
-    ///     Sets the aspect ratio of the projection matrix. This will cause the matrix to be re-calculated.
-    /// </summary>
     public float AspectRatio
     {
         get => _aspectRatio;
         set
         {
-            _aspectRatio = value;
-            UpdateMatrix();
+            if (!value.Equals(_aspectRatio))
+            {
+                _aspectRatio = value;
+                UpdateMatrix();
+            }
         }
     }
 
-    /// <summary>
-    ///     Sets the near plane distance of the projection matrix. This will cause the matrix to be re-calculated.
-    /// </summary>
     public float Near
     {
         get => _near;
         set
         {
-            _near = value;
-            UpdateMatrix();
+            if (!value.Equals(_near))
+            {
+                _near = value;
+                UpdateMatrix();
+            }
         }
     }
 
-    /// <summary>
-    ///     Sets the far plane distance of the projection matrix. This will cause the matrix to be re-calculated.
-    /// </summary>
     public float Far
     {
         get => _far;
         set
         {
-            _far = value;
-            UpdateMatrix();
+            if (!value.Equals(_far))
+            {
+                _far = value;
+                UpdateMatrix();
+            }
         }
     }
 
-    /// <summary>
-    ///     Sets the zoom of the projection matrix. This will cause the matrix to be re-calculated.
-    /// </summary>
     public float Zoom
     {
         get => _zoom;
         set
         {
-            _zoom = value;
-            UpdateMatrix();
+            if (!value.Equals(_zoom))
+            {
+                _zoom = value;
+                UpdateMatrix();
+            }
         }
     }
+    
+    #endregion
 
-    /// <summary>
-    ///     Rebuilds the matrices using the latest state.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the parameters caused the matrix to fail to build.</exception>
     private void UpdateMatrix()
     {
         var left = -_zoom * _aspectRatio * 0.5f;

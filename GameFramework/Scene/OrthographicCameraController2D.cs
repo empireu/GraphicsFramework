@@ -115,6 +115,16 @@ public sealed class OrthographicCameraController2D
         }
     }
 
+    public void SetAspect(float aspect)
+    {
+        Camera.AspectRatio = aspect;
+    }
+
+    public void SetAspect(float width, float height)
+    {
+        Camera.AspectRatio = width / height;
+    }
+
     // Todo: change the interpolation scheme to be time-independent
     public void Update(float factor, bool snap = false)
     {

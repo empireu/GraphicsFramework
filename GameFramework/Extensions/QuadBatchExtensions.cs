@@ -4,8 +4,34 @@ using GameFramework.Renderer;
 using GameFramework.Renderer.Batch;
 using GameFramework.Renderer.VertexFormats;
 using GameFramework.Utilities.Extensions;
+using Veldrid;
 
 namespace GameFramework.Extensions;
+
+public readonly struct QuadColors
+{
+    public required RgbaFloat C0 { get; init; }
+    public required RgbaFloat C1 { get; init; }
+    public required RgbaFloat C2 { get; init; }
+    public required RgbaFloat C3 { get; init; }
+
+    public static QuadColors FromZOrder(
+        RgbaFloat topLeft,
+        RgbaFloat topRight,
+        RgbaFloat bottomLeft,
+        RgbaFloat bottomRight)
+    {
+        return new QuadColors
+        {
+            C0 = topRight,
+            C1 = bottomRight,
+            C2 = bottomLeft,
+            C3 = topLeft
+        };
+    }
+
+    public static implicit operator RgbaFloat4(QuadColors colors) => new(colors.C0, colors.C1, colors.C2, colors.C3);
+}
 
 public static class QuadBatchExtensions
 {
@@ -24,6 +50,12 @@ public static class QuadBatchExtensions
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Quad(this QuadBatch batch, Matrix4x4 transform, RgbaFloat4 color)
+    {
+        batch.AddColoredQuad(transform, color.C0, color.C1, color.C2, color.C3);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Quad(this QuadBatch batch, Matrix4x4 transform, in RgbaFloat4 color)
     {
         batch.AddColoredQuad(transform, color.C0, color.C1, color.C2, color.C3);
     }
