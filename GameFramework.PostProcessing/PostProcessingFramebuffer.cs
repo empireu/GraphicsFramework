@@ -22,7 +22,7 @@ public sealed class PostProcessingFramebuffer : IDisposable
             1,
             1,
             format,
-            TextureUsage.RenderTarget |TextureUsage.Sampled);
+            TextureUsage.RenderTarget | TextureUsage.Sampled);
 
         var factory = device.ResourceFactory;
         var colorTarget = factory.CreateTexture(colorDescription);

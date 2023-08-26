@@ -254,7 +254,7 @@ public abstract class GameApplication
         _commandList.Begin();
         _commandList.SetFramebuffer(_device.SwapchainFramebuffer);
         _commandList.ClearColorTarget(0, ClearColor);
-        _commandList.ClearDepthStencil(0);
+        _commandList.ClearDepthStencil(1);
         _commandList.End();
 
         _device.SubmitCommands(_commandList);

@@ -112,7 +112,7 @@ public sealed class PostProcessor : IDisposable
         _application.Device.SubmitCommands(_commandList);
     }
 
-    public void Render(bool clear = true)
+    public void Render()
     {
         if (_outputFramebuffer == null)
         {
