@@ -36,7 +36,7 @@ public sealed class ImGuiLayer : Layer
         RegisterHandler<ScrollEvent>(OnScrollEvent);
     }
 
-    public bool Captured => _io.WantCaptureMouse || ImGuiNet.IsWindowHovered(ImGuiHoveredFlags.AnyWindow);
+    public bool Captured => IsEnabled && (_io.WantCaptureMouse || ImGuiNet.IsWindowHovered(ImGuiHoveredFlags.AnyWindow));
 
     private bool OnMouseEvent(MouseEvent arg)
     {
