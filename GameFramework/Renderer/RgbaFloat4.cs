@@ -76,6 +76,14 @@ public struct RgbaFloat4
         C3 = c3;
     }
 
+    public RgbaFloat4(Vector4 c0, Vector4 c1, Vector4 c2, Vector4 c3)
+    {
+        C0 = new RgbaFloat(c0);
+        C1 = new RgbaFloat(c1);
+        C2 = new RgbaFloat(c2);
+        C3 = new RgbaFloat(c3);
+    }
+
     /// <summary>
     /// Red (1, 0, 0, 1)
     /// </summary>
