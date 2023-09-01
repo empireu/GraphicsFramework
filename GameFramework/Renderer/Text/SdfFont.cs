@@ -5,6 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Veldrid;
 using Image = SixLabors.ImageSharp.Image;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace GameFramework.Renderer.Text;
 
@@ -36,11 +37,14 @@ public sealed class SdfFont
     }
 
     /// <summary>
-    ///     Measures a character.
+    ///     Measures a single character.
     /// </summary>
     /// <param name="c">The character to measure.</param>
     /// <param name="size">The font size to use.</param>
-    /// <param name="withoutPadding">If true, no padding will be applied to this measurement, resulting in a close approximation of the character's size.</param>
+    /// <param name="withoutPadding">
+    ///     If true, no padding will be applied to this measurement,
+    ///     resulting in a close approximation of the character's size (as specified by the font).
+    /// </param>
     /// <returns>The size of the character, if it were to be rendered.</returns>
     public Vector2 Measure(char c, float size, bool withoutPadding = false)
     {
@@ -61,7 +65,7 @@ public sealed class SdfFont
     }
 
     /// <summary>
-    ///     Changes a tracking position after placing a character in the grid.
+    ///     Increments a tracking position after placing a character in the grid.
     /// </summary>
     /// <param name="x">The current horizontal position in the grid.</param>
     /// <param name="y">The current vertical position in the grid.</param>
@@ -89,7 +93,7 @@ public sealed class SdfFont
 
         var stride = charSize.X;
         
-        x += stride + (HorizontalSpacing * size);
+        x += stride + HorizontalSpacing * size;
     }
 
     /// <summary>
@@ -147,6 +151,47 @@ public sealed class SdfFont
     }
 
     /// <summary>
+    ///     Iterates over the text grid, providing the position of each character.
+    /// </summary>
+    /// <param name="text">The text to iterate over. Newlines will result in new rows being added.</param>
+    /// <param name="size">The font size to use.</param>
+    /// <returns>
+    ///     The character at the current position,
+    ///     the current position in the grid,
+    ///     and a flag indicating if the character is a control character (currently, only newlines fit under this description)
+    /// </returns>
+    private IEnumerable<(char Char, Vector2 Translation, bool IsEmpty)> IterateGrid(string text, float size)
+    {
+        var y = 0f;
+        var x = 0f;
+
+        var lineHeight = LineHeight(size);
+
+        for (var index = 0; index < text.Length; index++)
+        {
+            var @char = text[index];
+
+            if (@char == '\r')
+            {
+                if (index + 1 < text.Length && text[index + 1] == '\n')
+                {
+                    continue;
+                }
+
+                @char = '\n';
+            }
+
+            var charSize = Measure(@char, size, true);
+
+            var translation = new Vector2(x + charSize.X / 2, -(y + size / 2));
+
+            PlaceCharacter(ref x, ref y, size, lineHeight, @char);
+
+            yield return (@char, translation, !(@char != ' ' && @char != '\n'));
+        }
+    }
+
+    /// <summary>
     ///     Renders the text to the specified batch.
     /// </summary>
     /// <param name="batch">The batch to render to.</param>
@@ -156,38 +201,28 @@ public sealed class SdfFont
     /// <param name="size">The font size to use.</param>
     public void Render(QuadBatch batch, Vector2 position, string text, Vector3? color = null, float size = 1)
     {
-        var options = color == null ? Options : Options.WithColor(color.Value);
-
-        var y = 0f;
-        var x = 0f;
+        var options = color == null 
+            ? Options 
+            : Options.WithColor(color.Value);
 
         var textureSampler = new TextureSampler(Sheet.View, batch.Device.LinearSampler);
-       
-        var lineHeight = LineHeight(size);
+        var transform = Matrix4x4.CreateScale(size, size, 0);
 
-        foreach (var @char in text)
+        foreach (var (@char, translation, isEmpty) in IterateGrid(text, size))
         {
-            var charSize = Measure(@char, size, true);
-
-            var translation = position + 
-                              Vector2.UnitX * (x + charSize.X / 2) -
-                              Vector2.UnitY * (y + size / 2);
-
-
-            PlaceCharacter(ref x, ref y, size, lineHeight, @char);
-
-            if (@char != ' ' && @char != '\n')
+            if (isEmpty)
             {
-                var transform =
-                    Matrix4x4.CreateScale(size, size, 0) *
-                    Matrix4x4.CreateTranslation(translation.X, translation.Y, 0);
-             
-                batch.AddSdfQuad(
-                    textureSampler,
-                    transform,
-                    Sheet.GetProperties(@char).Coordinates, 
-                    options);
+                continue;
             }
+
+            transform.Translation = new Vector3(position.X + translation.X, position.Y + translation.Y, 0);
+
+            batch.AddSdfQuad(
+                textureSampler,
+                transform,
+                Sheet.GetProperties(@char).Coordinates,
+                options
+            );
         }
     }
     
@@ -199,23 +234,25 @@ public sealed class SdfFont
     /// <returns>The size of the resulting text grid, if it were to be rendered.</returns>
     public Vector2 MeasureText(string text, float size)
     {
-        var y = 0f;
-        var x = 0f;
+        var min = new Vector2(float.MaxValue);
+        var max = new Vector2(float.MinValue);
 
-        var lineHeight = LineHeight(size);
+        var foundChars = false;
+        var extent = new Vector2(size / 2f);
 
-        var width = 0f;
-        var height = 0f;
-
-        foreach (var @char in text)
+        foreach (var (_, translation, isEmpty) in IterateGrid(text, size))
         {
-            width = Math.Max(width, x + size);
-            height = Math.Max(height, y + size);
+            if (isEmpty)
+            {
+                continue;
+            }
 
-            PlaceCharacter(ref x, ref y, size, lineHeight, @char);
+            foundChars = true;
+            min = Vector2.Min(min, translation - extent);
+            max = Vector2.Max(max, translation + extent);
         }
 
-        return new Vector2(width, height);
+        return foundChars ? max - min : Vector2.Zero;
     }
 
     [MessagePackObject]
