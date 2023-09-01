@@ -14,6 +14,50 @@ public struct RgbaFloat4
     public RgbaFloat C2;
     public RgbaFloat C3;
 
+    public float R
+    {
+        set
+        {
+            C0 = new RgbaFloat(value, C0.G, C0.B, C0.A);
+            C1 = new RgbaFloat(value, C1.G, C1.B, C1.A);
+            C2 = new RgbaFloat(value, C2.G, C2.B, C2.A);
+            C3 = new RgbaFloat(value, C3.G, C3.B, C3.A);
+        }
+    }
+
+    public float G
+    {
+        set
+        {
+            C0 = new RgbaFloat(C0.R, value, C0.B, C0.A);
+            C1 = new RgbaFloat(C1.R, value, C1.B, C1.A);
+            C2 = new RgbaFloat(C2.R, value, C2.B, C2.A);
+            C3 = new RgbaFloat(C3.R, value, C3.B, C3.A);
+        }
+    }
+
+    public float B
+    {
+        set
+        {
+            C0 = new RgbaFloat(C0.R, C0.G, value, C0.A);
+            C1 = new RgbaFloat(C1.R, C1.G, value, C1.A);
+            C2 = new RgbaFloat(C2.R, C2.G, value, C2.A);
+            C3 = new RgbaFloat(C3.R, C3.G, value, C3.A);
+        }
+    }
+
+    public float A
+    {
+        set
+        {
+            C0 = new RgbaFloat(C0.R, C0.G, C0.B, value);
+            C1 = new RgbaFloat(C1.R, C1.G, C1.B, value);
+            C2 = new RgbaFloat(C2.R, C2.G, C2.B, value);
+            C3 = new RgbaFloat(C3.R, C3.G, C3.B, value);
+        }
+    }
+
     public RgbaFloat4(float r, float g, float b, float a)
     {
         C0 = C1 = C2 = C3 = new RgbaFloat(r, g, b, a);
